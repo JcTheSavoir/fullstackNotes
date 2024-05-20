@@ -3,28 +3,28 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Index from "./components/Index";
 
-//Frontend connection to Backend  [package.json -> 'proxy:'] ie. Fetch/Axios to sever (http://localhost:3000/)
+// Objectives:
+// 1. How do I connect my backend to my frontend?
+// A: [package.json]-> 'proxy:'
+//ie: Fetch/Axios to server (localhost3000)
+// 2.CRUD functionality on Notes
 
 function App() {
-  // state for getting notes
   const [notes, setNotes] = useState([]);
 
-  //state for creating notes
-  const [createForm, setCreateForm] = useState({ title: "", body: "" });
-
-  //state for updating a note
-    //* Rmemeber: each item we are udpdating has a unique _id.
+  const [createForm, setCreateForm] = useState({
+    title: "",
+    body: "",
+  });
   const [updateForm, setUpdateForm] = useState({
     _id: null,
     title: "",
-    body: ""
-  })
-  //------------------------------------------[State]-----------------------------------------------------
+    body: "",
+  });
+  // * Remember: each item we are updating has a unique _id:
+  // --------------------------------[State]
 
-  //------------------------------------------[CRUD Operations]-------------------------------------------
-
-  //------------------------------------------[Create]------------------------------------------------------
-
+  // --------------------------------[Create]
   const createNote = async (e) => {
     e.preventDefault();
     // 1. Create Note
@@ -32,116 +32,156 @@ function App() {
     console.log(res);
     // Axios Req -> POST (formData => {state})
     setNotes(() => [...notes, res.data.note]);
+    // This adds the new note to the rest of existing notes in db.
   };
-
   const updateCreateFormField = (e) => {
-    const {value,name}= e.target
-    console.log({ name, value })
+    const { value, name } = e.target;
+    console.log({ name, value });
+    // setState to vals() targeted in form
 
-    // Clear form
-    setCreateForm(()=> ({
+    // Clear Form
+    setCreateForm(() => ({
       ...createForm,
-      [name]: value
-    }))
-    console.log("form cleared")
-  }
-  //------------------------------------------[Read]--------------------------------------------------------
+      [name]: value,
+      // title:  newValue
+      // body: otherNewVal
+    }));
+    console.log("form cleared.");
+  };
+  // Allow us to populate inputs and save their data
+
+  // --------------------------------[Read]
   const fetchNotes = async () => {
-    // 1. Make a request to the server
+    // 1. Make a Request to server
     const response = await axios({
-      method: "GET",
+      method: "get",
       url: "/api/notes",
     });
     // app.get(/notes){}
 
     const info = await response.data;
-    console.log(info);
-    // 2. Set the state
+    // console.log(info);
+
+    // 2. Set State
     setNotes(info.notes);
-    console.log(notes);
+    console.log("-Notes Fetched-");
   };
-  //------------------------------------------[Update]------------------------------------------------------
+  // --------------------------------[Update]
+  const handleUpdateFieldChange = (e) => {
+    // 1. Destructure event target
+    const { value, name } = e.target;
+    // 2. set State
+    setUpdateForm(() => ({
+      ...updateForm,
+      [name]: value,
+    }));
+  };
+  // Capture the event target value and set it to state (updateForm)
+
   const updateNote = async (e) => {
     e.preventDefault();
-    
-    // -----VV---------Get Title and body from the updateForm and Destructure
-    const {title, body} = updateForm
-
-    const res = await axios.put(`api/notes/${updateForm._id}`, {title, body});
+    const { title, body } = updateForm;
+    // ----> Get title and body from the updateForm and Destructure
+    const res = await axios.put(
+      `/api/notes/${updateForm._id}`,
+      { title, body }
+    );
     console.log(res);
-    // Axios Req -> Update (formData => {state})
-    setNotes(() => [...notes, res.data.note]);
+
+    // Update State
+    const newNotes = [...notes];
+    const noteIndex = notes.findIndex((note) => {
+      return note._id === updateForm._id;
+      // Find note by index and see if they match
+    });
+    newNotes[noteIndex] = res.data.note;
+    setNotes(newNotes);
+
+    // Clear Form
+    setUpdateForm(() => ({
+      _id: null,
+      title: "",
+      body: "",
+    }));
   };
 
+  const toggleUpdate = (note) => {
+    console.log("CurrentNote :", note);
+    setUpdateForm({
+      _id: note._id,
+      title: note.title,
+      body: note.body,
+    });
+  };
+  // --------------------------------[Delete]
 
-  // Capture the event target value and set it to state {updateForm} 
-  const handleUpdateFieldChange = async (e) => {
-    // 1. Destructure event target
-    const {value,name}= e.target;
-    // 2. Set State
-    setUpdateForm(()=> ({
-      ...updateForm,
-      [name]: value
-    }))
-  }
+  const deleteNote = (_id) => {
+    // 1.Find Note -> Delete
+    const res= axios.delete(`/api/notes/${_id}`);
+    // 2. Update
+    const newNotes = [...notes].filter((note)=>{
+      return note._id !== _id
+    })
+    setNotes(newNotes)
+  };
 
-  
-  //------------------------------------------[Delete]------------------------------------------------------
-
-  //------------------------------------------[useEffect]-----------------------------------------------------
   useEffect(() => {
     fetchNotes();
   }, []);
-
+  // --------------------------------[useEffect]
   return (
     <div className="App">
-      {/* FormContainer */}      
+      {/* FormContainer */}
       <div className="formContainer">
-
-        {/* createForm */}
         <div className="formAdmin">
           <h1>+New Note</h1>
           <form onSubmit={createNote}>
-            <input 
+            <input
               name="title"
               value={createForm.title}
               placeholder="Enter Title"
-              onChange={updateCreateFormField} 
+              onChange={updateCreateFormField}
             />
-            <textarea 
+            <textarea
               name="body"
               value={createForm.body}
               placeholder="Enter Body"
               onChange={updateCreateFormField}
-            />          
-            <button type="submit">Submit</button>
-          </form>
-        </div>
-        <hr/>
+            />
 
-        {/* updateForm */}
-        <div className="formAdmin">
-          <h1>+Update Note</h1>
-          <form onSubmit={updateNote}>
-            <input 
-              name="title"
-              value={updateForm.title}
-              placeholder="Enter Title"
-              onChange={handleUpdateFieldChange} 
-            />
-            <textarea 
-              name="body"
-              value={updateForm.body}
-              placeholder="Enter Body"
-              onChange={handleUpdateFieldChange}
-            />
             <button type="submit">Submit</button>
           </form>
         </div>
+        <hr />
+        {updateForm._id && (
+          <>
+            {/* --------Update Form */}
+            <div className="formAdmin">
+              <h1>+Update Note</h1>
+              <form onSubmit={updateNote}>
+                <input
+                  name="title"
+                  value={updateForm.title}
+                  placeholder="Enter Title"
+                  onChange={handleUpdateFieldChange}
+                />
+                <textarea
+                  name="body"
+                  value={updateForm.body}
+                  placeholder="Enter Body"
+                  onChange={handleUpdateFieldChange}
+                />
+
+                <button type="submit">Submit</button>
+              </form>
+            </div>
+          </>
+        )}
       </div>
 
-      <Index data={notes} />
+      <Index notes={notes} editFunc={toggleUpdate} deleteFunc={deleteNote} />
     </div>
   );
 }
+
 export default App;

@@ -1,14 +1,34 @@
-import React from 'react'
+import React from "react";
 
-const Notes = ({ note }) => {
+function Note({ content, editFunc, deleteFunc }) {
   return (
     <>
-      <div className='a_note'>
-        <h1>{note.title}</h1>
-        <p>{note.body}</p>
+      <div className="a_note">
+        <h1>{content.title}</h1>
+        <p>Body: {content.body}</p>
+
+        <div className="btnContainer">
+          <button
+            onClick={() => {
+              editFunc(content);
+            }}
+          >
+            {" "}
+            Update{" "}
+          </button>
+
+          <button
+            onClick={() => {
+              deleteFunc(content._id);
+            }}
+          >
+            {" "}
+            Delete{" "}
+          </button>
+        </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Notes
+export default Note;

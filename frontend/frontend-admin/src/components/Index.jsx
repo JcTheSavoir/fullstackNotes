@@ -1,18 +1,16 @@
 import React from 'react'
-import Note from './Note'
+import Note from './Note';
 
-const Index = ({ data }) => {
+function Index({notes,editFunc,deleteFunc}) {
   return (
     <>
-      {data && data.length > 0 ? (
-        data.map((note) => (
-          <div className="note" key={note._id}>
-            <Note note={note} />
+      {notes.map((note) => {
+        return (
+          <div key={note._id}>
+            <Note content={note} editFunc={editFunc} deleteFunc={deleteFunc}  />
           </div>
-        ))
-      ) : (
-        <p>No note found.</p>
-      )}
+        );
+      })}
     </>
   )
 }
