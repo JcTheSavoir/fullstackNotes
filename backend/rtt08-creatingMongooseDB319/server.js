@@ -3,6 +3,7 @@ require("dotenv").config()
 const express = require("express");
 const app = express()
 const PORT = process.env.PORT || 3000
+const usersController = require('./controllers/usersController')
 const connectToDb = require("./config/connectToDb")
 // This pulls our Mongoose connection into application
 const cors = require("cors"); 
@@ -48,6 +49,15 @@ app.use('/yugioh', yugiohRoute)
 app.use('/nike', nikeRoute)
 
 
+// -----------------------------------ROUTING FOR USER AUTHENTICATION--------------------------------------------------------------
+// Can rearrange it to be in route file later
+
+//
+app.post('/signup', usersController.signup)
+app.post('/login', usersController.login)
+app.post('/logout', usersController.logout)
+
+//-----------------------------------------------End Of USER ROUTES
 app.listen(PORT, ()=>{
     console.log(`Express Server Listending on port num: ${PORT}`)
 });
