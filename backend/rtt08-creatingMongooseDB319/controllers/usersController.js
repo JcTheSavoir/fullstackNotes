@@ -12,17 +12,18 @@ const signup = async(req, res) => {
     //** Hash Password {use bcryptjs} **/
 
 // 2. Create User
-   await User.create({
+   const newUser = await User.create({
         email, 
         password,
     });
-    console.log('User Created')
+    console.log('User Created', newUser)
 // Send Response
+    res.sendStatus(200)
 }
 
 // Login
 const login = () => {
-
+    
 }
 
 // Logout
