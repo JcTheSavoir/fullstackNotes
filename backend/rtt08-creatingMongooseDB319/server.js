@@ -56,7 +56,7 @@ app.use('/nike', nikeRoute)
 app.post('/signup', usersController.signup)
 app.post('/login', usersController.login)
 app.post('/logout', requireAuth, usersController.logout)
-// app.get('check-auth', usersController.checkAuth)
+app.get('check-auth', usersController.checkAuth)
 
 //-----------------------------------------------End Of USER ROUTES
 app.listen(PORT, ()=>{

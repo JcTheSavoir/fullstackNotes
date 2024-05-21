@@ -38,7 +38,7 @@ const login = async(req, res) => {
         //3a. If the password doesn't match
         if(!passwordMatch) return res.sendStatus(401)
     // 4. Create JWT
-        // Date.now is in miliseconds ---> convert by the following: Date.now() + 1000 * 60 * 60 * 24 * 30
+        // Date.now is in milliseconds ---> convert by the following: Date.now() + 1000 * 60 * 60 * 24 * 30
         // exp is to set an expiration date for the token.  In this case it's 30 days
         const exp = Date.now() + 1000 * 60 * 60 * 24 * 30
         console.log(exp)
@@ -60,18 +60,20 @@ const login = async(req, res) => {
         console.log(error)
     }
 }
-const checkAuth = () => {
-
+const checkAuth = (req, res) => {
+    console.log(req.user)
+    res.sendStatus(200)
 }
 
 // -----------------------------{Logout}------------------
-const logout = () => {
-
+const logout = (req, res) => {
+    res.clearCookie("Authorization")
+    res.sendStatus(200)
 }
-
 
 module.exports = {
     signup,
     login,
-    logout
+    logout,
+    checkAuth
 }
