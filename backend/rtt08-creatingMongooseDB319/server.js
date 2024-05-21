@@ -4,6 +4,7 @@ const express = require("express");
 const app = express()
 const PORT = process.env.PORT || 3000
 const usersController = require('./controllers/usersController')
+const requireAuth = require('./middleware/requireAuth')
 const connectToDb = require("./config/connectToDb")
 // This pulls our Mongoose connection into application
 const cors = require("cors"); 
@@ -54,10 +55,11 @@ app.use('/nike', nikeRoute)
 
 app.post('/signup', usersController.signup)
 app.post('/login', usersController.login)
-app.post('/logout', usersController.logout)
+app.post('/logout', requireAuth, usersController.logout)
+// app.get('check-auth', usersController.checkAuth)
 
 //-----------------------------------------------End Of USER ROUTES
 app.listen(PORT, ()=>{
-    console.log(`Express Server Listending on port num: ${PORT}`)
+    console.log(`Express Server Listening on port num: ${PORT}`)
 });
 //---------------------------------Server
