@@ -52,7 +52,6 @@ app.use('/nike', nikeRoute)
 // -----------------------------------ROUTING FOR USER AUTHENTICATION--------------------------------------------------------------
 // Can rearrange it to be in route file later
 
-//
 app.post('/signup', usersController.signup)
 app.post('/login', usersController.login)
 app.post('/logout', usersController.logout)

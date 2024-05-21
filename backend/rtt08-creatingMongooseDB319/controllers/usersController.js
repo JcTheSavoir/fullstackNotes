@@ -21,5 +21,18 @@ const signup = async(req, res) => {
 }
 
 // Login
+const login = () => {
+
+}
 
 // Logout
+const logout = () => {
+
+}
+
+
+module.exports = {
+    signup,
+    login,
+    logout
+}

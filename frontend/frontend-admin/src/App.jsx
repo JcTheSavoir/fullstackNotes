@@ -9,20 +9,20 @@ import Index from "./components/Index";
 //ie: Fetch/Axios to server (localhost3000)
 // 2.CRUD functionality on Notes
 
+// --------------------------------[State]
 function App() {
   const [notes, setNotes] = useState([]);
-
+  
   const [createForm, setCreateForm] = useState({
     title: "",
     body: "",
   });
+  // * Remember: each item we are updating has a unique _id because the data is from a mongoDB database:
   const [updateForm, setUpdateForm] = useState({
     _id: null,
     title: "",
     body: "",
   });
-  // * Remember: each item we are updating has a unique _id:
-  // --------------------------------[State]
 
   // --------------------------------[Create]
   const createNote = async (e) => {
